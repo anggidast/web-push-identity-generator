@@ -40,6 +40,7 @@ async function send(email) {
     console.log('Sending Push...');
     console.log('Your subscription:');
     console.log(JSON.stringify(subscription, null, 2));
+    const webpushKeys = JSON.stringify(subscription.keys);
     await fetch('https://aixp-rudder-api-aks.digitallab.id/6405dcdc-0812-4eb0-83e7-eb79d81b6a1f/70093b87-5178-40a4-a6f1-9df5d9e5b7ab/v1/batch', {
       method: 'POST',
       body: JSON.stringify({
@@ -50,7 +51,7 @@ async function send(email) {
               traits: {
                 email,
                 webpushEndpoint: subscription.endpoint,
-                webpushKeys: JSON.stringify(subscription.keys),
+                webpushKeys,
               },
             },
             messageId: `api-${uuidv4()}`,
