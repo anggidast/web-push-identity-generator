@@ -39,15 +39,11 @@ async function send(email) {
     // Send Push Notification
     console.log('Sending Push...');
     console.log('Your subscription:');
+    const parsedSubscription = JSON.parse(JSON.stringify(subscription));
     console.log(subscription);
     console.log(JSON.stringify(subscription, null, 2));
     console.log(JSON.parse(JSON.stringify(subscription)));
-    const webpushKeys = JSON.stringify({
-      keys: {
-        p256dh: subscription.getKey('p256dh'),
-        auth: subscription.getKey('auth'),
-      },
-    });
+    const webpushKeys = JSON.stringify(parsedSubscription.keys);
     console.log('webpushKeys: ', webpushKeys);
     const body = JSON.stringify({
       batch: [
