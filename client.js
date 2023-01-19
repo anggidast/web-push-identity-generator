@@ -40,11 +40,8 @@ async function send(email) {
     console.log('Sending Push...');
     console.log('Your subscription:');
     const parsedSubscription = JSON.parse(JSON.stringify(subscription));
-    console.log(subscription);
     console.log(JSON.stringify(subscription, null, 2));
-    console.log(JSON.parse(JSON.stringify(subscription)));
     const webpushKeys = JSON.stringify(parsedSubscription.keys);
-    console.log('webpushKeys: ', webpushKeys);
     const body = JSON.stringify({
       batch: [
         {
@@ -65,7 +62,6 @@ async function send(email) {
       ],
       sentAt: new Date().toISOString(),
     });
-    console.log('body: ', body);
     await fetch('https://aixp-rudder-api-aks.digitallab.id/6405dcdc-0812-4eb0-83e7-eb79d81b6a1f/70093b87-5178-40a4-a6f1-9df5d9e5b7ab/v1/batch', {
       method: 'POST',
       body,
