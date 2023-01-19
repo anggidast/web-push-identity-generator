@@ -41,10 +41,11 @@ async function send(email) {
     console.log('Your subscription:');
     console.log(subscription);
     console.log(JSON.stringify(subscription, null, 2));
+    console.log(JSON.parse(JSON.stringify(subscription)));
     const webpushKeys = JSON.stringify({
       keys: {
-        p256dh: subscription.getKeys('p256dh'),
-        auth: subscription.getKeys('auth'),
+        p256dh: subscription.getKey('p256dh'),
+        auth: subscription.getKey('auth'),
       },
     });
     console.log('webpushKeys: ', webpushKeys);
