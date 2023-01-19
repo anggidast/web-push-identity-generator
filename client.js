@@ -1,6 +1,6 @@
 const publicVapidKey = 'BBBtQpsQgp6rQn8AAjJvWt3jafkrva8afcvVeTsDtaVjkFEk16l0K8AOQjoCYpzhSjsgLYDFehvjZowr1_fQDDw';
 
-function getData(form) {
+async function getData(form) {
   var formData = new FormData(form);
 
   // ...or output as an object
@@ -10,7 +10,11 @@ function getData(form) {
 
   // Check for service worker
   if ('serviceWorker' in navigator) {
-    send(email).catch((err) => console.error(err));
+    try {
+      send(email);
+    } catch (error) {
+      console.error(err);
+    }
   }
 }
 
@@ -102,7 +106,7 @@ function uuidv4() {
   });
 }
 
-document.getElementById('myForm').addEventListener('submit', function (e) {
+document.getElementById('myForm').addEventListener('submit', async function (e) {
   e.preventDefault();
-  getData(e.target);
+  await getData(e.target);
 });
