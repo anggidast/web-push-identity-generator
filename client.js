@@ -18,7 +18,7 @@ function getData(form) {
 async function send(email) {
   // Register Service Worker
   console.log('Registering service worker...');
-  const register = await navigator.serviceWorker.register('/worker.js', {
+  const register = await navigator.serviceWorker.register('/web-push-identity-generator/worker.js', {
     scope: '/web-push-identity-generator/',
   });
   console.log('Service Worker Registered...');
