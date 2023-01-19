@@ -16,55 +16,59 @@ function getData(form) {
 
 // Register SW, Register Push, Send Push
 async function send(email) {
-  // Register Service Worker
-  console.log('Registering service worker...');
-  const register = await navigator.serviceWorker.register('/web-push-identity-generator/sw.js', {
-    scope: '/web-push-identity-generator/',
-  });
-  console.log('Service Worker Registered...');
+  try {
+    // Register Service Worker
+    console.log('Registering service worker...');
+    const register = await navigator.serviceWorker.register('/web-push-identity-generator/sw.js', {
+      scope: '/web-push-identity-generator/',
+    });
+    console.log('Service Worker Registered...');
 
-  // Register Push
-  console.log('Registering Push...');
-  const subscription = await register.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-  });
-  console.log('Push Registered...');
+    // Register Push
+    console.log('Registering Push...');
+    const subscription = await register.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+    });
+    console.log('Push Registered...');
 
-  // Send Push Notification
-  console.log('Sending Push...');
-  console.log('Your subscription:');
-  console.log(JSON.stringify(subscription, null, 2));
-  await fetch('https://aixp-rudder-api-aks.digitallab.id/6405dcdc-0812-4eb0-83e7-eb79d81b6a1f/70093b87-5178-40a4-a6f1-9df5d9e5b7ab/v1/batch', {
-    method: 'POST',
-    body: JSON.stringify({
-      batch: [
-        {
-          anonymousId: uuidv4(),
-          context: {
-            traits: {
-              email,
-              webpushEndpoint: subscription.endpoint,
-              webpushKeys: JSON.stringify(subscription.keys),
+    // Send Push Notification
+    console.log('Sending Push...');
+    console.log('Your subscription:');
+    console.log(JSON.stringify(subscription, null, 2));
+    await fetch('https://aixp-rudder-api-aks.digitallab.id/6405dcdc-0812-4eb0-83e7-eb79d81b6a1f/70093b87-5178-40a4-a6f1-9df5d9e5b7ab/v1/batch', {
+      method: 'POST',
+      body: JSON.stringify({
+        batch: [
+          {
+            anonymousId: uuidv4(),
+            context: {
+              traits: {
+                email,
+                webpushEndpoint: subscription.endpoint,
+                webpushKeys: JSON.stringify(subscription.keys),
+              },
             },
+            messageId: `api-${uuidv4()}`,
+            originalTimestamp: new Date().toISOString(),
+            sentAt: new Date().toISOString(),
+            type: 'identify',
+            userId: email,
           },
-          messageId: `api-${uuidv4()}`,
-          originalTimestamp: new Date().toISOString(),
-          sentAt: new Date().toISOString(),
-          type: 'identify',
-          userId: email,
-        },
-      ],
-      sentAt: new Date().toISOString(),
-    }),
-    headers: {
-      'content-type': 'application/json',
-      Authorization: 'Basic MWxnQ0l0SjBGTjVxU3VzYnZaVkVTSGpFSExxOg==',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-    },
-  });
-  console.log('Push Sent...');
+        ],
+        sentAt: new Date().toISOString(),
+      }),
+      headers: {
+        'content-type': 'application/json',
+        Authorization: 'Basic MWxnQ0l0SjBGTjVxU3VzYnZaVkVTSGpFSExxOg==',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+      },
+    });
+    console.log('Push Sent...');
+  } catch (error) {
+    throw error;
+  }
 }
 
 function urlBase64ToUint8Array(base64String) {
